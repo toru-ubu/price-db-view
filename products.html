@@ -22,13 +22,10 @@ input[type="text"] {
 
 table { border-collapse: collapse; width: 100%; min-width: 900px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-th {
-  background-color: #f2f2f2;
-  cursor: pointer;
-  user-select: none;
-}
-th.sorted-asc::after { content: " ▲"; }
-th.sorted-desc::after { content: " ▼"; }
+th { background-color: #f2f2f2; cursor: pointer; position: relative; }
+.sorted { background-color: #d0e0ff !important; }
+.sort-icon { font-size: 10px; color: #aaa; margin-left: 4px; }
+th.sorted .sort-icon { color: #000; font-weight: bold; }
 a { color: #1a0dab; text-decoration: none; }
 
 @media (max-width: 768px) {
@@ -47,12 +44,12 @@ a { color: #1a0dab; text-decoration: none; }
 <table id="productTable">
 <thead>
 <tr>
-<th>商品名</th>
-<th onclick="sortTable(1)">通常価格</th>
-<th onclick="sortTable(2)">現在価格</th>
-<th onclick="sortTable(3)">ポイント還元</th>
-<th onclick="sortTable(4)">実質価格</th>
-<th onclick="sortTable(5)">割引率</th>
+<th onclick="sortTable(0)">商品名</th>
+<th onclick="sortTable(1)">通常価格<span class="sort-icon">▲▼</span></th>
+<th onclick="sortTable(2)">現在価格<span class="sort-icon">▲▼</span></th>
+<th onclick="sortTable(3)">ポイント還元<span class="sort-icon">▲▼</span></th>
+<th onclick="sortTable(4)">実質価格<span class="sort-icon">▲▼</span></th>
+<th onclick="sortTable(5)">割引率<span class="sort-icon">▲▼</span></th>
 <th>買い時？</th>
 <th>CPU</th>
 <th>GPU</th>
@@ -109,23 +106,17 @@ a { color: #1a0dab; text-decoration: none; }
 </div>
 
 <script>
-// 検索処理（商品名・CPU・GPUのみ対象）
 document.getElementById("searchBox").addEventListener("input", function () {
-  const filter = this.value.toLowerCase();
-  const rows = document.querySelectorAll("table tbody tr");
-
+  var filter = this.value.toLowerCase();
+  var rows = document.querySelectorAll("#productTable tbody tr");
   rows.forEach(function (row) {
-    const cells = row.querySelectorAll("td");
-    const name = cells[0]?.textContent.toLowerCase();
-    const cpu = cells[7]?.textContent.toLowerCase();
-    const gpu = cells[8]?.textContent.toLowerCase();
-
-    const match = name.includes(filter) || cpu.includes(filter) || gpu.includes(filter);
-    row.style.display = match ? "" : "none";
+    var name = row.cells[0].textContent.toLowerCase();
+    var cpu = row.cells[7].textContent.toLowerCase();
+    var gpu = row.cells[8].textContent.toLowerCase();
+    row.style.display = name.includes(filter) || cpu.includes(filter) || gpu.includes(filter) ? "" : "none";
   });
 });
 
-// ソート処理
 let currentSortedCol = null;
 let currentSortDir = "asc";
 
@@ -133,10 +124,8 @@ function sortTable(colIndex) {
   const table = document.getElementById("productTable");
   const tbody = table.querySelector("tbody");
   const rows = Array.from(tbody.querySelectorAll("tr"));
-
   const isNumeric = colIndex >= 1 && colIndex <= 5;
 
-  // 昇降トグル
   if (currentSortedCol === colIndex) {
     currentSortDir = currentSortDir === "asc" ? "desc" : "asc";
   } else {
@@ -144,12 +133,9 @@ function sortTable(colIndex) {
     currentSortDir = "asc";
   }
 
-  // ヘッダーの昇降マーク更新
   table.querySelectorAll("th").forEach((th, idx) => {
-    th.classList.remove("sorted-asc", "sorted-desc");
-    if (idx === colIndex) {
-      th.classList.add(currentSortDir === "asc" ? "sorted-asc" : "sorted-desc");
-    }
+    th.classList.remove("sorted");
+    if (idx === colIndex) th.classList.add("sorted");
   });
 
   rows.sort((a, b) => {
