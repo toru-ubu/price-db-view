@@ -7,36 +7,59 @@
 <title>価格推移DB - 一覧</title>
 <style>
 body { font-family: sans-serif; }
-input[type="text"] { width: 100%; padding: 8px; font-size: 16px; margin: 12px 0; box-sizing: border-box; }
-select { padding: 6px; font-size: 16px; margin-bottom: 12px; }
+input[type="text"], select { padding: 8px; font-size: 16px; margin: 12px 8px 12px 0; }
+label { font-size: 16px; margin-right: 8px; }
 .table-container { overflow-x: auto; width: 100%; }
 table { border-collapse: collapse; width: 100%; min-width: 900px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+th.sortable:hover { background-color: #e2e2e2; cursor: pointer; }
+th.sorted-asc::after { content: " ▲"; }
+th.sorted-desc::after { content: " ▼"; }
 th { background-color: #f2f2f2; }
 a { color: #1a0dab; text-decoration: none; }
+.favorite-btn { cursor: pointer; font-size: 18px; }
+.favorite-true { color: gold; }
 @media (max-width: 768px) { table { font-size: 14px; } th, td { padding: 4px; } }
 </style>
 </head>
 <body>
+
 <h1>価格推移DB（2025-06-26 時点）</h1>
+
 <input type="text" id="searchBox" placeholder="商品名・CPU・GPUなどで検索...">
-<label for="formFilter">形状で絞り込み:</label>
-<select id="formFilter">
-  <option value="all">すべて表示</option>
-  <option value="notebook">ノートパソコン</option>
-  <option value="desktop">デスクトップパソコン</option>
-  <option value="portable">ポータブルゲーミングPC</option>
-</select>
+<label><input type="checkbox" id="favoriteOnly"> お気に入りのみ表示</label>
+<label>
+  形状フィルター:
+  <select id="formFilter">
+    <option value="all">すべて</option>
+    <option value="notebook">ノートパソコン</option>
+    <option value="desktop">デスクトップ</option>
+    <option value="portable">ポータブルゲーミングPC</option>
+  </select>
+</label>
+
 <div class="table-container">
-<table>
+<table id="productTable">
 <thead>
 <tr>
-<th>商品名</th><th>通常価格</th><th>現在価格</th><th>ポイント還元</th><th>実質価格</th><th>割引率</th><th>買い時？</th><th>CPU</th><th>GPU</th><th>メモリ</th><th>ストレージ</th><th>形状</th>
+<th></th>
+<th class="sortable">商品名</th>
+<th class="sortable">通常価格</th>
+<th class="sortable">現在価格</th>
+<th class="sortable">ポイント還元</th>
+<th class="sortable">実質価格</th>
+<th class="sortable">割引率</th>
+<th>買い時？</th>
+<th>CPU</th>
+<th>GPU</th>
+<th>メモリ</th>
+<th>ストレージ</th>
 </tr>
 </thead>
 <tbody>
 
-<tr data-form="notebook">
+<tr data-url="https://www.dospara.co.jp/TC143/MC15968.html" data-name="GALLERIA RL7C-R35-5N 『Minecraft: Java & Bedrock Edition for PC、PC Game Pass同梱版』" data-cpu="Core i7-13620H" data-gpu="GeForce RTX 3050 6GB Laptop GPU" data-form="notebook">
+<td class="favorite-btn" data-url="https://www.dospara.co.jp/TC143/MC15968.html">☆</td>
 <td><a href="https://www.dospara.co.jp/TC143/MC15968.html" target="_blank">GALLERIA RL7C-R35-5N 『Minecraft: Java & Bedrock Edition for PC、PC Game Pass同梱版』</a></td>
 <td>104,980円</td>
 <td>104,980円</td>
@@ -48,10 +71,10 @@ a { color: #1a0dab; text-decoration: none; }
 <td>GeForce RTX 3050 6GB Laptop GPU</td>
 <td>16GBメモリ</td>
 <td>500GB SSD</td>
-<td>notebook</td>
 </tr>
 
-<tr data-form="notebook">
+<tr data-url="https://www.dospara.co.jp/TC143/MC15814.html" data-name="GALLERIA RL7C-R46-5N 『Minecraft: Java ＆ Bedrock Edition for PC、PC Game Pass同梱版』" data-cpu="Core i7-13620H" data-gpu="GeForce RTX 4060 8GB LaptopGPU" data-form="notebook">
+<td class="favorite-btn" data-url="https://www.dospara.co.jp/TC143/MC15814.html">☆</td>
 <td><a href="https://www.dospara.co.jp/TC143/MC15814.html" target="_blank">GALLERIA RL7C-R46-5N 『Minecraft: Java ＆ Bedrock Edition for PC、PC Game Pass同梱版』</a></td>
 <td>159,980円</td>
 <td>159,980円</td>
@@ -63,10 +86,10 @@ a { color: #1a0dab; text-decoration: none; }
 <td>GeForce RTX 4060 8GB LaptopGPU</td>
 <td>16GBメモリ</td>
 <td>500GB SSD</td>
-<td>notebook</td>
 </tr>
 
-<tr data-form="desktop">
+<tr data-url="https://www.dospara.co.jp/TC30/MC16791.html" data-name="GALLERIA RM7C-R46 『Minecraft: Java ＆ Bedrock Edition for PC、PC Game Pass同梱版』" data-cpu="Core i7-14700F" data-gpu="GeForce RTX 4060 8GB" data-form="desktop">
+<td class="favorite-btn" data-url="https://www.dospara.co.jp/TC30/MC16791.html">☆</td>
 <td><a href="https://www.dospara.co.jp/TC30/MC16791.html" target="_blank">GALLERIA RM7C-R46 『Minecraft: Java ＆ Bedrock Edition for PC、PC Game Pass同梱版』</a></td>
 <td>184,980円</td>
 <td>184,980円</td>
@@ -78,30 +101,77 @@ a { color: #1a0dab; text-decoration: none; }
 <td>GeForce RTX 4060 8GB</td>
 <td>16GBメモリ DDR5</td>
 <td>500GB Gen4 SSD</td>
-<td>desktop</td>
 </tr>
 
 </tbody>
 </table>
 </div>
+
 <script>
-document.getElementById("searchBox").addEventListener("input", function () {
-  var filter = this.value.toLowerCase();
-  var rows = document.querySelectorAll("table tbody tr");
-  rows.forEach(function (row) {
-    var text = row.textContent.toLowerCase();
-    row.style.display = text.includes(filter) ? "" : "none";
+const searchBox = document.getElementById("searchBox");
+const favoriteOnly = document.getElementById("favoriteOnly");
+const formFilter = document.getElementById("formFilter");
+const table = document.getElementById("productTable");
+const favoriteSet = new Set(JSON.parse(localStorage.getItem("favorites") || "[]"));
+
+function updateFavorites() {
+  document.querySelectorAll(".favorite-btn").forEach(btn => {
+    const url = btn.dataset.url;
+    btn.textContent = favoriteSet.has(url) ? "★" : "☆";
+    btn.classList.toggle("favorite-true", favoriteSet.has(url));
   });
+}
+
+function filterRows() {
+  const keyword = searchBox.value.toLowerCase();
+  const form = formFilter.value;
+  document.querySelectorAll("tbody tr").forEach(row => {
+    const url = row.dataset.url;
+    const text = (row.dataset.name + row.dataset.cpu + row.dataset.gpu).toLowerCase();
+    const formFactor = row.dataset.form;
+    const matchSearch = text.includes(keyword);
+    const matchFavorite = !favoriteOnly.checked || favoriteSet.has(url);
+    const matchForm = (form === "all") || (formFactor === form);
+    row.style.display = matchSearch && matchFavorite && matchForm ? "" : "none";
+  });
+}
+
+searchBox.addEventListener("input", filterRows);
+favoriteOnly.addEventListener("change", filterRows);
+formFilter.addEventListener("change", filterRows);
+
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("favorite-btn")) {
+    const url = e.target.dataset.url;
+    if (favoriteSet.has(url)) favoriteSet.delete(url);
+    else favoriteSet.add(url);
+    localStorage.setItem("favorites", JSON.stringify([...favoriteSet]));
+    updateFavorites();
+    filterRows();
+  }
 });
 
-document.getElementById("formFilter").addEventListener("change", function () {
-  var selected = this.value;
-  var rows = document.querySelectorAll("table tbody tr");
-  rows.forEach(function (row) {
-    var type = row.getAttribute("data-form");
-    row.style.display = (selected === "all" || selected === type) ? "" : "none";
+updateFavorites();
+filterRows();
+
+document.querySelectorAll("th.sortable").forEach((header, i) => {
+  header.addEventListener("click", () => {
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const idx = i;
+    const isAsc = header.classList.contains("sorted-asc");
+    document.querySelectorAll("th").forEach(th => th.classList.remove("sorted-asc", "sorted-desc"));
+    header.classList.add(isAsc ? "sorted-desc" : "sorted-asc");
+    rows.sort((a, b) => {
+      const getText = row => row.children[i].textContent.replace(/[^\d.-]/g, "");
+      const valA = parseFloat(getText(a)) || 0;
+      const valB = parseFloat(getText(b)) || 0;
+      return isAsc ? valB - valA : valA - valB;
+    });
+    rows.forEach(row => tbody.appendChild(row));
   });
 });
 </script>
+
 </body>
 </html>
