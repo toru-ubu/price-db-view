@@ -12,9 +12,10 @@ label { font-size: 16px; margin-right: 8px; }
 .table-container { overflow-x: auto; width: 100%; }
 table { border-collapse: collapse; width: 100%; min-width: 900px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+th.sortable::after { content: " B2BC"; font-size: 10px; margin-left: 4px; color: #ccc; }
+th.sorted-asc::after { content: " B2"; color: black; }
+th.sorted-desc::after { content: " BC"; color: black; }
 th.sortable:hover { background-color: #e2e2e2; cursor: pointer; }
-th.sorted-asc::after { content: " ▲"; }
-th.sorted-desc::after { content: " ▼"; }
 th { background-color: #f2f2f2; }
 a { color: #1a0dab; text-decoration: none; }
 .favorite-btn { cursor: pointer; font-size: 18px; }
@@ -154,16 +155,17 @@ document.addEventListener("click", e => {
 updateFavorites();
 filterRows();
 
-document.querySelectorAll("th.sortable").forEach((header, i) => {
+const headers = document.querySelectorAll("th.sortable");
+headers.forEach((header, i) => {
   header.addEventListener("click", () => {
     const tbody = table.querySelector("tbody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
     const idx = i;
     const isAsc = header.classList.contains("sorted-asc");
-    document.querySelectorAll("th").forEach(th => th.classList.remove("sorted-asc", "sorted-desc"));
+    headers.forEach(th => th.classList.remove("sorted-asc", "sorted-desc"));
     header.classList.add(isAsc ? "sorted-desc" : "sorted-asc");
     rows.sort((a, b) => {
-      const getText = row => row.children[i].textContent.replace(/[^\d.-]/g, "");
+      const getText = row => row.children[i].textContent.replace(/[^0-9\.\-]/g, "");
       const valA = parseFloat(getText(a)) || 0;
       const valB = parseFloat(getText(b)) || 0;
       return isAsc ? valB - valA : valA - valB;
