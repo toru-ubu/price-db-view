@@ -106,9 +106,15 @@ a { color: #1a0dab; text-decoration: none; }
 document.getElementById("searchBox").addEventListener("input", function () {
   var filter = this.value.toLowerCase();
   var rows = document.querySelectorAll("table tbody tr");
+
   rows.forEach(function (row) {
-    var text = row.textContent.toLowerCase();
-    row.style.display = text.includes(filter) ? "" : "none";
+    var cells = row.querySelectorAll("td");
+    var name = cells[0]?.textContent.toLowerCase();
+    var cpu = cells[7]?.textContent.toLowerCase();
+    var gpu = cells[8]?.textContent.toLowerCase();
+
+    var match = name.includes(filter) || cpu.includes(filter) || gpu.includes(filter);
+    row.style.display = match ? "" : "none";
   });
 });
 </script>
