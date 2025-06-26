@@ -172,7 +172,7 @@ document.querySelectorAll("th.sortable").forEach((header, i) => {
     document.querySelectorAll("th").forEach(th => th.classList.remove("sorted-asc", "sorted-desc"));
     header.classList.add(isAsc ? "sorted-desc" : "sorted-asc");
     rows.sort((a, b) => {
-      const getText = row => row.children[i].textContent.replace(/[^\d.-]/g, "");
+      const getText = row => row.children[i].textContent.replace(/[^0-9.-]/g, "");
       const valA = parseFloat(getText(a)) || 0;
       const valB = parseFloat(getText(b)) || 0;
       return isAsc ? valB - valA : valA - valB;
