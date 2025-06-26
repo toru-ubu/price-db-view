@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -171,12 +170,14 @@ document.querySelectorAll("th.sortable").forEach((header, i) => {
     const isAsc = header.classList.contains("sorted-asc");
     document.querySelectorAll("th").forEach(th => th.classList.remove("sorted-asc", "sorted-desc"));
     header.classList.add(isAsc ? "sorted-desc" : "sorted-asc");
+
     rows.sort((a, b) => {
-      const getText = row => row.children[i].textContent.replace(/[^0-9.-]/g, "");
+      const getText = row => row.children[i].textContent.replace(/[^\d.-]/g, "");
       const valA = parseFloat(getText(a)) || 0;
       const valB = parseFloat(getText(b)) || 0;
       return isAsc ? valB - valA : valA - valB;
     });
+
     rows.forEach(row => tbody.appendChild(row));
   });
 });
