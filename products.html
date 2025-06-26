@@ -22,7 +22,13 @@ input[type="text"] {
 
 table { border-collapse: collapse; width: 100%; min-width: 900px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-th { background-color: #f2f2f2; }
+th {
+  background-color: #f2f2f2;
+  cursor: pointer;
+  user-select: none;
+}
+th.sorted-asc::after { content: " ▲"; }
+th.sorted-desc::after { content: " ▼"; }
 a { color: #1a0dab; text-decoration: none; }
 
 @media (max-width: 768px) {
@@ -38,15 +44,15 @@ a { color: #1a0dab; text-decoration: none; }
 <input type="text" id="searchBox" placeholder="商品名・CPU・GPUなどで検索...">
 
 <div class="table-container">
-<table>
+<table id="productTable">
 <thead>
 <tr>
 <th>商品名</th>
-<th>通常価格</th>
-<th>現在価格</th>
-<th>ポイント還元</th>
-<th>実質価格</th>
-<th>割引率</th>
+<th onclick="sortTable(1)">通常価格</th>
+<th onclick="sortTable(2)">現在価格</th>
+<th onclick="sortTable(3)">ポイント還元</th>
+<th onclick="sortTable(4)">実質価格</th>
+<th onclick="sortTable(5)">割引率</th>
 <th>買い時？</th>
 <th>CPU</th>
 <th>GPU</th>
@@ -103,20 +109,59 @@ a { color: #1a0dab; text-decoration: none; }
 </div>
 
 <script>
+// 検索処理（商品名・CPU・GPUのみ対象）
 document.getElementById("searchBox").addEventListener("input", function () {
-  var filter = this.value.toLowerCase();
-  var rows = document.querySelectorAll("table tbody tr");
+  const filter = this.value.toLowerCase();
+  const rows = document.querySelectorAll("table tbody tr");
 
   rows.forEach(function (row) {
-    var cells = row.querySelectorAll("td");
-    var name = cells[0]?.textContent.toLowerCase();
-    var cpu = cells[7]?.textContent.toLowerCase();
-    var gpu = cells[8]?.textContent.toLowerCase();
+    const cells = row.querySelectorAll("td");
+    const name = cells[0]?.textContent.toLowerCase();
+    const cpu = cells[7]?.textContent.toLowerCase();
+    const gpu = cells[8]?.textContent.toLowerCase();
 
-    var match = name.includes(filter) || cpu.includes(filter) || gpu.includes(filter);
+    const match = name.includes(filter) || cpu.includes(filter) || gpu.includes(filter);
     row.style.display = match ? "" : "none";
   });
 });
+
+// ソート処理
+let currentSortedCol = null;
+let currentSortDir = "asc";
+
+function sortTable(colIndex) {
+  const table = document.getElementById("productTable");
+  const tbody = table.querySelector("tbody");
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+
+  const isNumeric = colIndex >= 1 && colIndex <= 5;
+
+  // 昇降トグル
+  if (currentSortedCol === colIndex) {
+    currentSortDir = currentSortDir === "asc" ? "desc" : "asc";
+  } else {
+    currentSortedCol = colIndex;
+    currentSortDir = "asc";
+  }
+
+  // ヘッダーの昇降マーク更新
+  table.querySelectorAll("th").forEach((th, idx) => {
+    th.classList.remove("sorted-asc", "sorted-desc");
+    if (idx === colIndex) {
+      th.classList.add(currentSortDir === "asc" ? "sorted-asc" : "sorted-desc");
+    }
+  });
+
+  rows.sort((a, b) => {
+    const aText = a.cells[colIndex].textContent.replace(/[^\d.-]/g, "");
+    const bText = b.cells[colIndex].textContent.replace(/[^\d.-]/g, "");
+    const aVal = isNumeric ? parseFloat(aText) || 0 : aText;
+    const bVal = isNumeric ? parseFloat(bText) || 0 : bText;
+    return currentSortDir === "asc" ? aVal - bVal : bVal - aVal;
+  });
+
+  rows.forEach(row => tbody.appendChild(row));
+}
 </script>
 
 </body>
