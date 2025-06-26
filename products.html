@@ -12,10 +12,18 @@ label { font-size: 16px; margin-right: 8px; }
 .table-container { overflow-x: auto; width: 100%; }
 table { border-collapse: collapse; width: 100%; min-width: 900px; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-th.sortable { position: relative; }
-th.sortable::after { content: " B4BE"; font-size: 12px; position: absolute; right: 8px; color: #aaa; }
-th.sorted-asc::after { content: " B2"; color: black; }
-th.sorted-desc::after { content: " BC"; color: black; }
+th.sortable::after {
+  content: " ▲▼";
+  font-size: 10px;
+  color: #ccc;
+}
+th.sorted-asc::after,
+th.sorted-desc::after {
+  content: " ▲▼";
+  font-size: 10px;
+  color: #000;
+  font-weight: bold;
+}
 th.sortable:hover { background-color: #e2e2e2; cursor: pointer; }
 th { background-color: #f2f2f2; }
 a { color: #1a0dab; text-decoration: none; }
@@ -45,7 +53,7 @@ a { color: #1a0dab; text-decoration: none; }
 <thead>
 <tr>
 <th></th>
-<th class="sortable">商品名</th>
+<th>商品名</th>
 <th class="sortable">通常価格</th>
 <th class="sortable">現在価格</th>
 <th class="sortable">ポイント還元</th>
@@ -160,7 +168,6 @@ document.querySelectorAll("th.sortable").forEach((header, i) => {
   header.addEventListener("click", () => {
     const tbody = table.querySelector("tbody");
     const rows = Array.from(tbody.querySelectorAll("tr"));
-    const idx = i;
     const isAsc = header.classList.contains("sorted-asc");
     document.querySelectorAll("th").forEach(th => th.classList.remove("sorted-asc", "sorted-desc"));
     header.classList.add(isAsc ? "sorted-desc" : "sorted-asc");
